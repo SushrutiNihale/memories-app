@@ -2,8 +2,10 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import mongoose from 'mongoose';
+import 'dotenv/config';
 // we can use import (instead of require) statements in the latest version of node
 // make sure to include "type": "module" in package.json
+
 
 import postsRoutes from './routes/posts.routes.js';
 
@@ -15,7 +17,7 @@ app.use(cors());
 
 app.use('/posts', postsRoutes);
 
-const CONNECTION_URL = 'mongodb+srv://SushrutiNihale:Nykaa123@cluster0.dgnkh.mongodb.net/?retryWrites=true&w=majority';
+const CONNECTION_URL = process.env.CONNECTION_URL;
 const PORT = process.env.PORT || 5000;
 
 mongoose.connect(CONNECTION_URL, { useNewUrlParser: true, useUnifiedTopology: true })

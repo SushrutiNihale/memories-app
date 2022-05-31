@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { TextField, Button, Typography, Paper } from '@material-ui/core';
 import FileBase from 'react-file-base64';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import useStyles from './styles';
-import { createPost } from '../../actions/posts.actions';
+import { createPost, updatePost } from '../../actions/posts.actions';
+import { useEffect } from 'react';
 
-export const Form = () => {
+export const Form = ({ currentId, setCurrentId }) => {
     const classes = useStyles();
     const [formData, setFormData] = useState({
         creator: '',
@@ -15,11 +16,24 @@ export const Form = () => {
         message: '',
         selectedFile: ''
     });
+    const updateThisPost = useSelector((store) => currentId ? store.posts.find((post) => post._id === currentId) : null);
 
+    useEffect(() => {
+        if (updateThisPost) setFormData(updateThisPost);
+    }, [updateThisPost]);
     const dispatch = useDispatch();
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(createPost(formData));
+
+        if (currentId) {
+            // if currentId is not null, that is, we have to update a post
+            dispatch(updatePost(currentId, formData));
+        } else {
+            // create a post
+            dispatch(createPost(formData));
+        }
+
+        clear();
     };
     const handleChange = (e) => {
         setFormData({
@@ -27,12 +41,21 @@ export const Form = () => {
             [e.target.name]: e.target.value
         });
     };
-    const clear = () => { };
+    const clear = () => {
+        setCurrentId(null);
+        setFormData({
+            creator: '',
+            title: '',
+            tags: '',
+            message: '',
+            selectedFile: ''
+        });
+    };
 
     return (
         <Paper className={classes.paper}>
             <form className={`${classes.form} ${classes.root}`} autoComplete="off" noValidate onSubmit={handleSubmit}>
-                <Typography variant='h6'>Creating a Memory</Typography>
+                <Typography variant='h6'>{currentId ? 'Editing' : 'Creating'} a Memory</Typography>
                 <TextField name="creator" variant="outlined" label="Creator" fullWidth value={formData.creator} onChange={handleChange} />
                 <TextField name="title" variant="outlined" label="Title" fullWidth value={formData.title} onChange={handleChange} />
                 <TextField name="message" variant="outlined" label="Message" fullWidth value={formData.message} onChange={handleChange} />

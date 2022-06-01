@@ -4,10 +4,15 @@ import { Grid, CircularProgress } from '@material-ui/core';
 
 import { Post } from './Post/Post';
 import useStyles from './styles';
+import { useEffect } from 'react';
 
 export const Posts = ({ setCurrentId }) => {
     const classes = useStyles();
     const posts = useSelector((store) => store.posts);
+
+    useEffect(() => {
+        console.log(posts);
+    }, [posts]);
 
     return (
         !posts.length ? <CircularProgress /> : (

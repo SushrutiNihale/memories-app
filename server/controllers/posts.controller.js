@@ -26,7 +26,6 @@ export const updatePost = async (req, res) => {
 
         // if id exists in the database
         const updatedPost = await Post.findOneAndUpdate({ _id: id }, { $set: req.body }, { new: true });
-        console.log(updatedPost);
         return res.status(200).send(updatedPost);
     } catch (err) {
         res.status(500).send(err);
@@ -47,7 +46,6 @@ export const likePost = async (req, res) => {
         if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send("No post with this id");
 
         const updatedPost = await Post.findOneAndUpdate({ _id: id }, { $inc: { likesCount: 1 } }, { new: true });
-        console.log(updatedPost);
         return res.status(200).send(updatedPost);
     } catch (err) {
         res.status(500).send(err);

@@ -10,9 +10,9 @@ export const Posts = ({ setCurrentId }) => {
     const classes = useStyles();
     const posts = useSelector((store) => store.posts);
 
-    useEffect(() => {
-        console.log(posts);
-    }, [posts]);
+    // useEffect(() => {
+    //     console.log(posts);
+    // }, [posts]);
 
     return (
         !posts.length ? <CircularProgress /> : (

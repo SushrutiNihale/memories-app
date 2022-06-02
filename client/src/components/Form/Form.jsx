@@ -12,10 +12,11 @@ export const Form = ({ currentId, setCurrentId }) => {
     const [formData, setFormData] = useState({
         creator: '',
         title: '',
-        tags: '',
+        tags: [],
         message: '',
         selectedFile: ''
     });
+
     const updateThisPost = useSelector((store) => currentId ? store.posts.find((post) => post._id === currentId) : null);
 
     useEffect(() => {
@@ -36,7 +37,12 @@ export const Form = ({ currentId, setCurrentId }) => {
         clear();
     };
     const handleChange = (e) => {
-        setFormData({
+        if (e.target.name === "tags") {
+            setFormData({
+                ...formData,
+                [e.target.name]: e.target.value.split(',')
+            });
+        } else setFormData({
             ...formData,
             [e.target.name]: e.target.value
         });

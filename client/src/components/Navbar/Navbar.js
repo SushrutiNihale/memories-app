@@ -1,14 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AppBar, Avatar, Button, Toolbar, Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 
 import memories from '../../images/memories.png';
 import useStyles from './styles';
+import { AUTH, LOGOUT } from "../../constants/actionTypes";
 
 export const Navbar = () => {
     const classes = useStyles();
+    const dispatch = useDispatch();
+
+    useEffect(
+        () => getUserDetails,
+        []
+    );
+
+    const getUserDetails = () => {
+        if (localStorage.getItem('user_details')) {
+            // if user has not been logged out in the last session
+            const action = { type: AUTH, payload: JSON.parse(localStorage.getItem('user_details')) };
+            dispatch(action);
+        }
+    }
     const user = useSelector((store) => store.authData);
+
+    const logOut = () => {
+        dispatch({ type: LOGOUT });
+    }
 
     return (
         <AppBar className={classes.appBar} position="static" color="inherit">
@@ -30,7 +49,7 @@ export const Navbar = () => {
                             <Typography className={classes.userName} variant="h6">
                                 {user.result.name}
                             </Typography>
-                            <Button variant="contained" className={classes.logout} color="secondary">Log Out</Button>
+                            <Button variant="contained" className={classes.logout} color="secondary" onClick={logOut}>Log Out</Button>
                         </div>
                     )
                     :

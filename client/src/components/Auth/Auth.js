@@ -1,19 +1,48 @@
 import React, { useState } from "react";
 import { Avatar, Typography, Button, Paper, Grid, Container, TextField } from "@material-ui/core";
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import { GoogleLogin } from 'react-google-login';
+import { useDispatch } from 'react-redux';
+// import { GoogleLogin } from '@react-oauth/google';
+import { useNavigate } from 'react-router-dom';
 
 import useStyles from './styles';
-import { Input } from "@material-ui/core";
+import { Input } from "./Input";
+import Icon from "./icon";
 
 export const Auth = () => {
     const classes = useStyles();
-    const isSignUp = true;
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const [isSignUp, setIsSignUp] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
     const handleSubmit = () => { }
     const handleChange = () => { }
     const handleShowPassword = () => {
         setShowPassword((prev) => !prev);
+    }
+    const toggleComp = () => {
+        setIsSignUp((prev) => !prev);
+        handleShowPassword();
+    }
+    const googleSuccess = async (res) => {
+        console.log(res);
+        const result = res?.profileObj; // optional chaining operator; does not throw an error if res doesn't exist
+        const token = res?.tokenId;
+
+        try {
+            dispatch({ type: 'AUTH', payload: { result, token } });
+
+            navigate("/");
+        } catch (err) {
+            console.log(err);
+        }
+    }
+    const googleFailure = (err) => {
+        console.log(err.details);
+        console.log(err.error);
+        console.log("Login failed");
     }
 
     return (
@@ -26,6 +55,7 @@ export const Auth = () => {
                     {isSignUp ? 'Sign Up' : 'Sign In'}
                 </Typography>
                 <form className={classes.form} onSubmit={handleSubmit}>
+                    {/* we can have both sign in and sign up in a single component as shown below */}
                     <Grid container spacing={2}>
                         {isSignUp && (
                             <>
@@ -40,8 +70,39 @@ export const Auth = () => {
                     <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
                         {isSignUp ? "Sign Up" : "Sign In"}
                     </Button>
+                    {/* <GoogleLogin
+                        clientId="423720360471-l0f4kjdd6o4b0g0hvkjkdk7975hck6ng.apps.googleusercontent.com"
+                        onSuccess={googleSuccess}
+                        onFailure={googleFailure}
+                        theme="filled_blue"
+                        text="signin_with"
+                    /> */}
+
+                    <GoogleLogin
+                        clientId="564033717568-bu2nr1l9h31bhk9bff4pqbenvvoju3oq.apps.googleusercontent.com"
+                        render={(renderProps) => (
+                            <Button className={classes.googleButton} color="primary" fullWidth onClick={renderProps.onClick} disabled={renderProps.disabled} startIcon={<Icon />} variant="contained">
+                                Google Sign In
+                            </Button>
+                        )}
+                        onSuccess={googleSuccess}
+                        onFailure={googleFailure}
+                        cookiePolicy="single_host_origin"
+                    />
+                    <Grid container justifyContent="flex-end">
+                        <Grid item>
+                            <Button onClick={toggleComp}>
+                                {isSignUp
+                                    ?
+                                    "Already have an account? Log In"
+                                    :
+                                    "Don't have an account? Sign Up"
+                                }
+                            </Button>
+                        </Grid>
+                    </Grid>
                 </form>
             </Paper>
-        </Container>
+        </Container >
     )
 }

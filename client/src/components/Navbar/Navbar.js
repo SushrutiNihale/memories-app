@@ -1,20 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import { AppBar, Avatar, Button, Toolbar, Typography } from '@material-ui/core';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import memories from '../../images/memories.png';
 import useStyles from './styles';
 
 export const Navbar = () => {
     const classes = useStyles();
-
-    const user = null;
+    const user = useSelector((store) => store.authData);
 
     return (
         <AppBar className={classes.appBar} position="static" color="inherit">
             <div className={classes.brandContainer}>
                 <Typography
-                    // component={Link} to="/"
+                    component={Link} to="/"
                     className={classes.heading} variant="h2" align="center">Memories</Typography>
                 <img className={classes.image} src={memories} alt="memories" height={60} />
             </div>

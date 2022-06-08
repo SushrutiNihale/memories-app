@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Avatar, Typography, Button, Paper, Grid, Container, TextField } from "@material-ui/core";
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { GoogleLogin } from 'react-google-login';
@@ -16,9 +16,24 @@ export const Auth = () => {
     const navigate = useNavigate();
     const [isSignUp, setIsSignUp] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const [formData, setFormData] = useState({
+        "firstName": "",
+        "lastName": "",
+        "email": "",
+        "password": "",
+        "confirmPassword": ""
+    });
 
-    const handleSubmit = () => { }
-    const handleChange = () => { }
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        console.log(formData);
+    }
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        })
+    }
     const handleShowPassword = () => {
         setShowPassword((prev) => !prev);
     }
@@ -27,7 +42,6 @@ export const Auth = () => {
         handleShowPassword();
     }
     const googleSuccess = async (res) => {
-        console.log(res);
         const result = res?.profileObj; // optional chaining operator; does not throw an error if res doesn't exist
         const token = res?.tokenId;
 
@@ -67,7 +81,7 @@ export const Auth = () => {
                         <Input name="password" label="Password" handleChange={handleChange} type={showPassword ? "text" : "password"} handleShowPassword={handleShowPassword} />
                         {isSignUp && <Input name="confirmPassword" label="Confirm Password" handleChange={handleChange} type="password" />}
                     </Grid>
-                    <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit}>
+                    <Button type="submit" fullWidth variant="contained" color="primary" className={classes.submit} onClick={handleSubmit}>
                         {isSignUp ? "Sign Up" : "Sign In"}
                     </Button>
                     {/* <GoogleLogin

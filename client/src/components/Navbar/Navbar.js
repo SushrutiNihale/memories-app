@@ -12,14 +12,15 @@ export const Navbar = () => {
     const dispatch = useDispatch();
 
     useEffect(
-        () => getUserDetails,
+        () => getUserDetails(),
         []
     );
 
     const getUserDetails = () => {
         if (localStorage.getItem('user_details')) {
             // if user has not been logged out in the last session
-            const action = { type: AUTH, payload: JSON.parse(localStorage.getItem('user_details')) };
+            const user_details = JSON.parse(localStorage.getItem('user_details'));
+            const action = { type: AUTH, payload: user_details };
             dispatch(action);
         }
     }

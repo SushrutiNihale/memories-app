@@ -1,6 +1,6 @@
 import React from "react";
 import { Container } from '@material-ui/core';
-import { Route, Routes, Navigate, useNavigate } from 'react-router-dom';
+import { Route, Routes, Navigate } from 'react-router-dom';
 
 import { Navbar } from "./components/Navbar/Navbar";
 import { Home } from "./components/Home/Home";
@@ -16,7 +16,7 @@ export const App = () => {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/auth" element={
-                    user_details ? <Navigate to="/" /> : <Auth />
+                    user_details ? <Navigate to="/" /> : <Auth /> // if user details are stored in local storage, go to home
                 } />
             </Routes>
         </Container>

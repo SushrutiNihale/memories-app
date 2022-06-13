@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import useStyles from './styles';
 import { Input } from "./Input";
 import Icon from "./icon";
+import { signIn, signUp } from "../../actions/auth.actions";
 
 export const Auth = () => {
     const classes = useStyles();
@@ -27,6 +28,10 @@ export const Auth = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(formData);
+
+        if (isSignUp) {
+            dispatch(signUp(formData));
+        }
     }
     const handleChange = (e) => {
         setFormData({
@@ -39,7 +44,7 @@ export const Auth = () => {
     }
     const toggleComp = () => {
         setIsSignUp((prev) => !prev);
-        handleShowPassword();
+        setShowPassword(false);
     }
     const googleSuccess = async (res) => {
         const result = res?.profileObj; // optional chaining operator; does not throw an error if res doesn't exist

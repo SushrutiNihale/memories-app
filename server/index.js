@@ -8,6 +8,7 @@ import 'dotenv/config';
 
 
 import postsRoutes from './routes/posts.routes.js';
+import usersRoutes from './routes/users.routes.js';
 
 const app = express();
 
@@ -16,6 +17,7 @@ app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
 app.use(cors());
 
 app.use('/posts', postsRoutes);
+app.use('/users', usersRoutes);
 
 const CONNECTION_URL = process.env.CONNECTION_URL;
 const PORT = process.env.PORT || 5000;

@@ -2,9 +2,9 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import 'dotenv/config';
 
-import User from '../models/users.model';
+import User from '../models/users.model.js';
 
-const signIn = async (req, res) => {
+export const signIn = async (req, res) => {
     const { email, password } = req.body;
 
     try {
@@ -25,22 +25,23 @@ const signIn = async (req, res) => {
     }
 }
 
-const signUp = async (req, res) => {
+export const signUp = async (req, res) => {
+    console.log('signing user up')
     const { email, password, confirmPassword, firstName, lastName } = req.body;
 
     try {
         if (password !== confirmPassword) return res.status(400).send("Passwords do not match");
 
         const existingUser = await User.find({ email });
-        if (existingUser) return res.status(400).send("This email is already registered with us");
+        if (existingUser.length !== 0) return res.status(400).send("This email is already registered with us");
 
         const hashedPassword = await bcrypt.hash(password, 12);
         const result = await User.create({ email, password: hashedPassword, name: `${firstName} ${lastName}` });
 
         const token = jwt.sign({ email: result.email, id: result._id }, process.env.JWT_KEY, { expiresIn: "1h" });
-        res.status(200).send({ result, token });
+        return res.status(200).send(({ result, token }));
 
-        return res.status(200).send(result);
+        // return res.status(200).send(result);
     } catch (err) {
         res.status(500).send(err);
     }

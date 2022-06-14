@@ -31,6 +31,8 @@ export const Auth = () => {
 
         if (isSignUp) {
             dispatch(signUp(formData));
+        } else {
+            dispatch(signIn(formData));
         }
     }
     const handleChange = (e) => {

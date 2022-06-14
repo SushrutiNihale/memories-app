@@ -19,7 +19,7 @@ export const signIn = async (req, res) => {
         // using jsonwebtoken to store the email address and id of the user
         const token = jwt.sign({ email: existingUser.email, id: existingUser._id }, process.env.JWT_KEY, { expiresIn: "1h" });
 
-        res.status(500).send({ result: existingUser, token });
+        return res.status(200).send({ result: existingUser, token });
     } catch (err) {
         res.status(500).send(err);
     }

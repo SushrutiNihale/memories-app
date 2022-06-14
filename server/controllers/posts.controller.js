@@ -12,7 +12,7 @@ export const getPosts = async (req, res) => {
 
 export const createPost = async (req, res) => {
     try {
-        let post = await Post.create(req.body);
+        let post = await Post.create({ ...req.body, creator: req.userId });
         res.status(200).send(post);
     } catch (err) {
         res.status(500).send(err);
@@ -59,10 +59,26 @@ export const deletePost = async (req, res) => {
 export const likePost = async (req, res) => {
     try {
         const id = req.params.id;
+
+        if (!req.userId) {
+            return res.send({ message: "Please log in to interact with the post" });
+        }
         if (!mongoose.Types.ObjectId.isValid(id)) return res.status(404).send("No post with this id");
 
-        const updatedPost = await Post.findOneAndUpdate({ _id: id }, { $inc: { likesCount: 1 } }, { new: true });
-        return res.status(200).send(updatedPost);
+        const post = await Post.findById(id);
+        const index = post.likes.findIndex((id) => id === String(req.userId));
+
+        if (index === -1) {
+            // user liking the post
+            post.likes.push(req.userId);
+        } else {
+            // user unliking the post
+            post.likes = post.likes.filter((id) => id !== String(req.userId));
+        }
+
+        const updatedPost = await Post.findByIdAndUpdate(id, post, { new: true });
+
+        res.status(200).send(updatedPost);
     } catch (err) {
         res.status(500).send(err);
     }
